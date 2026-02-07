@@ -16,6 +16,10 @@ interface Contract {
 export default function Home() {
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tokenAddress, setTokenAddress] = useState('');
+  const [tokenInfo, setTokenInfo] = useState<any>(null);
+  const [tokenLoading, setTokenLoading] = useState(false);
+  const [tokenError, setTokenError] = useState('');
 
   useEffect(() => {
     // Initial load
@@ -35,6 +39,33 @@ export default function Home() {
     } catch (error) {
       console.error('Failed to fetch contracts:', error);
       setLoading(false);
+    }
+  }
+
+  async function fetchTokenInfo() {
+    if (!tokenAddress.trim()) {
+      setTokenError('Please enter a token address');
+      return;
+    }
+
+    setTokenLoading(true);
+    setTokenError('');
+    setTokenInfo(null);
+
+    try {
+      const res = await fetch(`/api/token/info?address=${encodeURIComponent(tokenAddress.trim())}`);
+      const data = await res.json();
+      
+      if (!res.ok) {
+        setTokenError(data.error || 'Failed to fetch token info');
+      } else {
+        setTokenInfo(data);
+      }
+    } catch (error) {
+      console.error('Token info error:', error);
+      setTokenError('Failed to fetch token info');
+    } finally {
+      setTokenLoading(false);
     }
   }
 
@@ -115,6 +146,156 @@ export default function Home() {
               <div className="text-3xl font-bold text-purple-400">
                 {contracts.filter(c => c.type === 'nft').length}
               </div>
+            </div>
+          </div>
+
+          {/* Token Lookup */}
+          <div className="bg-slate-900/50 backdrop-blur-xl border border-blue-900/30 rounded-xl overflow-hidden mb-8">
+            <div className="border-b border-blue-900/30 px-6 py-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                🔍 Token Info Lookup
+              </h2>
+            </div>
+            <div className="p-6">
+              <div className="flex gap-3 mb-4">
+                <input
+                  type="text"
+                  value={tokenAddress}
+                  onChange={(e) => setTokenAddress(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && fetchTokenInfo()}
+                  placeholder="Enter token address (0x...)"
+                  className="flex-1 bg-slate-950/50 border border-blue-900/30 rounded-lg px-4 py-3 text-white placeholder-blue-300/30 focus:outline-none focus:border-blue-500/50"
+                />
+                <button
+                  onClick={fetchTokenInfo}
+                  disabled={tokenLoading}
+                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-900/50 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold"
+                >
+                  {tokenLoading ? '🔄 Loading...' : 'Check Token'}
+                </button>
+              </div>
+
+              {tokenError && (
+                <div className="bg-red-950/50 border border-red-500/30 rounded-lg p-4 text-red-300">
+                  {tokenError}
+                </div>
+              )}
+
+              {tokenInfo && (
+                <div className="bg-slate-950/50 border border-blue-900/30 rounded-lg p-6 space-y-6">
+                  {/* Token Header */}
+                  <div className="border-b border-blue-900/20 pb-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="text-2xl font-bold mb-1">
+                          {tokenInfo.onchain?.name || 'Unknown Token'}
+                        </h3>
+                        <div className="flex items-center gap-3 text-sm">
+                          <span className="text-blue-400 font-semibold">
+                            {tokenInfo.onchain?.symbol || 'N/A'}
+                          </span>
+                          <span className="text-slate-500">•</span>
+                          <a
+                            href={tokenInfo.links?.basescan}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:text-blue-300 font-mono text-xs"
+                          >
+                            {tokenInfo.address?.slice(0, 6)}...{tokenInfo.address?.slice(-4)}
+                          </a>
+                        </div>
+                      </div>
+                      {tokenInfo.market?.price && (
+                        <div className="text-right">
+                          <div className="text-3xl font-bold text-cyan-400">
+                            ${parseFloat(tokenInfo.market.price).toFixed(6)}
+                          </div>
+                          {tokenInfo.market?.priceChange24h && (
+                            <div className={`text-sm ${parseFloat(tokenInfo.market.priceChange24h) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              {parseFloat(tokenInfo.market.priceChange24h) >= 0 ? '+' : ''}
+                              {parseFloat(tokenInfo.market.priceChange24h).toFixed(2)}% (24h)
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* On-Chain Data */}
+                  <div>
+                    <h4 className="text-sm font-semibold text-blue-300 mb-3">📊 On-Chain Data</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-slate-900/30 rounded-lg p-3">
+                        <div className="text-xs text-slate-400 mb-1">Total Supply</div>
+                        <div className="text-lg font-semibold">
+                          {parseFloat(tokenInfo.onchain?.totalSupply || '0').toLocaleString()}
+                        </div>
+                      </div>
+                      <div className="bg-slate-900/30 rounded-lg p-3">
+                        <div className="text-xs text-slate-400 mb-1">Decimals</div>
+                        <div className="text-lg font-semibold">
+                          {tokenInfo.onchain?.decimals || 'N/A'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Market Data */}
+                  {tokenInfo.market && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-blue-300 mb-3">💰 Market Data</h4>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-slate-900/30 rounded-lg p-3">
+                          <div className="text-xs text-slate-400 mb-1">Liquidity</div>
+                          <div className="text-lg font-semibold">
+                            ${parseFloat(tokenInfo.market.liquidity || '0').toLocaleString()}
+                          </div>
+                        </div>
+                        <div className="bg-slate-900/30 rounded-lg p-3">
+                          <div className="text-xs text-slate-400 mb-1">Volume (24h)</div>
+                          <div className="text-lg font-semibold">
+                            ${parseFloat(tokenInfo.market.volume24h || '0').toLocaleString()}
+                          </div>
+                        </div>
+                        {tokenInfo.market.dex && tokenInfo.market.dex !== 'null' && (
+                          <div className="bg-slate-900/30 rounded-lg p-3">
+                            <div className="text-xs text-slate-400 mb-1">DEX</div>
+                            <div className="text-lg font-semibold">{tokenInfo.market.dex}</div>
+                          </div>
+                        )}
+                        {tokenInfo.market.mainPair && tokenInfo.market.mainPair !== 'null' && (
+                          <div className="bg-slate-900/30 rounded-lg p-3">
+                            <div className="text-xs text-slate-400 mb-1">Main Pair</div>
+                            <div className="text-lg font-semibold">{tokenInfo.market.mainPair}</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Links */}
+                  <div className="flex gap-3">
+                    <a
+                      href={tokenInfo.links?.basescan}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 rounded-lg transition-colors text-center text-sm"
+                    >
+                      View on Basescan
+                    </a>
+                    {tokenInfo.market?.chartUrl && tokenInfo.market.chartUrl !== 'null' && (
+                      <a
+                        href={tokenInfo.market.chartUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-500/30 rounded-lg transition-colors text-center text-sm"
+                      >
+                        View Chart
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
