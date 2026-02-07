@@ -67,7 +67,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0b0d] text-white">
+    <div className="min-h-screen bg-[rgb(10,11,13)] text-white">
       {/* Header */}
       <header className="border-b border-[#32353d] bg-[#0a0b0d]/95 backdrop-blur sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">

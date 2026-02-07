@@ -4,18 +4,37 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Coinbase Blue Spectrum */
+  --cb-blue-60: 0, 82, 255;
+  --cb-blue-70: 0, 75, 235;
+  --cb-blue-40: 38, 110, 255;
+  
+  /* Coinbase Gray Spectrum (Dark Mode) */
+  --cb-gray-0: 10, 11, 13;
+  --cb-gray-10: 30, 32, 37;
+  --cb-gray-20: 50, 53, 61;
+  --cb-gray-40: 91, 97, 110;
+  --cb-gray-50: 114, 120, 134;
+  --cb-gray-70: 165, 170, 182;
+  --cb-gray-100: 255, 255, 255;
+}
+
 @layer base {
-  body {
-    @apply bg-[#0a0b0d] text-white;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-feature-settings: 'liga' 1, 'calt' 1;
+  * {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    @apply bg-[rgb(var(--cb-gray-0))] text-[rgb(var(--cb-gray-100))];
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-feature-settings: 'liga' 1, 'calt' 1;
   }
   
   code,
   pre,
   .font-mono {
-    font-family: 'JetBrains Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
   }
 }
