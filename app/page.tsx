@@ -72,20 +72,19 @@ export default function Home() {
   }
 
   return (
-    <Box background="backgroundPrimary">
+    <Box style={{ background: 'rgb(10, 11, 13)', minHeight: '100vh' }}>
       {/* Header */}
       <Box
-        borderBottomWidth="borderWidth1"
-        borderColor="line"
-        background="backgroundPrimary"
         style={{ 
+          borderBottom: '1px solid rgb(50, 53, 61)',
+          background: 'rgba(10, 11, 13, 0.95)',
           backdropFilter: 'blur(8px)',
           position: 'sticky',
           top: 0,
           zIndex: 50 
         }}
       >
-        <Box maxWidth="1400px" marginHorizontal="auto" paddingHorizontal={6} paddingVertical={4}>
+        <Box maxWidth="1400px" style={{ marginLeft: "auto", marginRight: "auto" }} style={{ paddingLeft: "1.5rem", paddingRight: "1.5rem" }} style={{ paddingTop: "1rem", paddingBottom: "1rem" }}>
           <HStack justify="space-between" align="center">
             <HStack gap={3} align="center">
               <Box
@@ -121,13 +120,13 @@ export default function Home() {
 
       {/* Hero */}
       <Box
-        paddingVertical={20}
-        paddingHorizontal={6}
+        style={{ paddingTop: "5rem", paddingBottom: "5rem" }}
+        style={{ paddingLeft: "1.5rem", paddingRight: "1.5rem" }}
         style={{ 
           background: 'linear-gradient(to bottom, rgba(10, 11, 13, 1), rgba(0, 82, 255, 0.05), rgba(10, 11, 13, 1))'
         }}
       >
-        <Box maxWidth="1152px" marginHorizontal="auto">
+        <Box maxWidth="1152px" style={{ marginLeft: "auto", marginRight: "auto" }}>
           <BinaryBeans />
           
           <VStack gap={4} align="center" style={{ marginTop: '3rem', textAlign: 'center' }}>
@@ -141,7 +140,7 @@ export default function Home() {
         </Box>
       </Box>
 
-      <Box maxWidth="1400px" marginHorizontal="auto" paddingHorizontal={6} paddingVertical={12}>
+      <Box maxWidth="1400px" style={{ marginLeft: "auto", marginRight: "auto" }} style={{ paddingLeft: "1.5rem", paddingRight: "1.5rem" }} style={{ paddingTop: "3rem", paddingBottom: "3rem" }}>
         {/* Stats */}
         <HStack gap={4} style={{ marginBottom: '3rem', flexWrap: 'wrap' }}>
           <Card style={{ flex: 1, minWidth: '200px' }} padding={6}>
@@ -172,7 +171,7 @@ export default function Home() {
 
         {/* Token Lookup */}
         <Card style={{ marginBottom: '3rem' }}>
-          <Box borderBottomWidth="borderWidth1" borderColor="line" padding={6} background="backgroundSecondary">
+          <Box padding={6} style={{ borderBottom: '1px solid rgb(50, 53, 61)', background: 'rgba(30, 32, 37, 0.5)' }}>
             <Text size="lg" weight="bold">
               <span style={{ color: 'rgb(60, 138, 255)' }}>$</span> Token Lookup
             </Text>
@@ -196,19 +195,20 @@ export default function Home() {
 
             {tokenError && (
               <Box
-                background="negativeBackground"
-                borderWidth="borderWidth1"
-                borderColor="negative"
-                borderRadius="borderRadius8"
                 padding={4}
-                style={{ marginBottom: '1.5rem' }}
+                style={{ 
+                  marginBottom: '1.5rem',
+                  background: 'rgba(207, 32, 47, 0.1)',
+                  border: '1px solid rgba(207, 32, 47, 0.3)',
+                  borderRadius: '0.5rem'
+                }}
               >
                 <Text color="negative" size="sm">{tokenError}</Text>
               </Box>
             )}
 
             {tokenInfo && (
-              <Card background="backgroundSecondary" padding={6}>
+              <Card padding={6} style={{ background: 'rgba(30, 32, 37, 0.5)' }}>
                 <VStack gap={4}>
                   <HStack justify="space-between" style={{ flexWrap: 'wrap' }}>
                     <VStack gap={1}>
@@ -253,7 +253,7 @@ export default function Home() {
 
         {/* Live Feed */}
         <Card>
-          <Box borderBottomWidth="borderWidth1" borderColor="line" padding={6} background="backgroundSecondary">
+          <Box padding={6} style={{ borderBottom: '1px solid rgb(50, 53, 61)', background: 'rgba(30, 32, 37, 0.5)' }}>
             <HStack gap={2} align="center">
               <Box
                 style={{ 
@@ -282,9 +282,8 @@ export default function Home() {
                 <Box 
                   key={contract.address}
                   padding={6}
-                  borderBottomWidth={idx < Math.min(contracts.length, 10) - 1 ? "borderWidth1" : undefined}
-                  borderColor="line"
                   style={{ 
+                    borderBottom: idx < Math.min(contracts.length, 10) - 1 ? '1px solid rgb(50, 53, 61)' : undefined,
                     transition: 'background 0.2s',
                     cursor: 'pointer'
                   }}
@@ -340,20 +339,20 @@ export default function Home() {
 
         {/* Agent Integration */}
         <Card 
+          padding={8}
           style={{ 
             marginTop: '3rem',
             background: 'linear-gradient(to bottom right, rgba(0, 82, 255, 0.05), rgba(60, 138, 255, 0.05))',
             border: '1px solid rgba(0, 82, 255, 0.3)'
           }}
-          padding={8}
         >
           <VStack gap={4}>
             <Text size="2xl" weight="bold">🤖 Agent API</Text>
             <Box
-              background="backgroundPrimary"
-              borderRadius="borderRadius8"
               padding={4}
               style={{
+                background: 'rgb(10, 11, 13)',
+                borderRadius: '0.5rem',
                 fontFamily: 'monospace',
                 fontSize: '0.875rem',
                 color: 'rgb(60, 138, 255)'
@@ -378,11 +377,12 @@ export default function Home() {
 
       {/* Footer */}
       <Box 
-        borderTopWidth="borderWidth1" 
-        borderColor="line" 
-        marginTop={16} 
-        paddingVertical={8}
-        style={{ textAlign: 'center' }}
+        style={{ paddingTop: "2rem", paddingBottom: "2rem" }}
+        style={{ 
+          borderTop: '1px solid rgb(50, 53, 61)', 
+          marginTop: '4rem', 
+          textAlign: 'center' 
+        }}
       >
         <Text size="sm" color="foregroundMuted">
           Built by{' '}
