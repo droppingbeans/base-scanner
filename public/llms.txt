@@ -1,0 +1,111 @@
+# Base Scanner - Agent Integration
+
+Base Scanner monitors the Base network for newly deployed contracts in real-time and provides instant token analysis.
+
+## API Endpoints
+
+### GET /api/contracts/recent
+Returns the 100 most recently discovered contracts on Base.
+
+Response:
+```json
+{
+  "contracts": [
+    {
+      "address": "0x...",
+      "deployer": "0x...",
+      "blockNumber": 12345678,
+      "timestamp": 1707321600,
+      "type": "token" | "nft" | "unknown",
+      "name": "Token Name",
+      "symbol": "TKN",
+      "score": 85
+    }
+  ],
+  "lastBlock": 12345678
+}
+```
+
+### GET /api/token/[address]
+Get comprehensive token information for any ERC20 contract.
+
+Example: GET /api/token/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+
+Response:
+```json
+{
+  "address": "0x...",
+  "name": "USD Coin",
+  "symbol": "USDC",
+  "decimals": 6,
+  "totalSupply": "70000000000000000",
+  "price": "1.00",
+  "liquidity": 616007.96,
+  "volume24h": 28405.94,
+  "priceChange24h": "0.01",
+  "dex": "aerodrome",
+  "pair": "USDC/USDbC",
+  "chartUrl": "https://dexscreener.com/base/0x...",
+  "basescanUrl": "https://basescan.org/address/0x..."
+}
+```
+
+## Use Cases
+
+### Opportunity Discovery
+Poll /api/contracts/recent every 10-30 seconds to discover new token launches, NFT collections, and contracts as they deploy.
+
+### Token Analysis
+When a new token is discovered, call /api/token/[address] to get:
+- Price and liquidity data
+- Trading volume
+- DEX information
+- Direct links to charts and explorers
+
+### Scoring
+Each contract includes an "interestingness score" (0-100) based on:
+- Liquidity depth
+- Trading volume
+- Contract verification
+- Deployer reputation (future)
+
+### Integration Example
+```javascript
+// Poll for new contracts
+setInterval(async () => {
+  const res = await fetch('https://base-scanner.vercel.app/api/contracts/recent');
+  const { contracts } = await res.json();
+  
+  // Filter high-score tokens
+  const interesting = contracts.filter(c => c.type === 'token' && c.score > 70);
+  
+  // Analyze each
+  for (const contract of interesting) {
+    const info = await fetch(`https://base-scanner.vercel.app/api/token/${contract.address}`);
+    const data = await info.json();
+    
+    if (data.liquidity > 10000 && data.volume24h > 5000) {
+      // High liquidity + volume = worth investigating
+      console.log('Found interesting token:', data);
+    }
+  }
+}, 30000); // Every 30 seconds
+```
+
+## Rate Limits
+- No authentication required
+- Reasonable usage: ~2-4 requests/minute
+- For high-frequency needs, consider caching responses
+
+## Network
+- Chain: Base (8453)
+- RPC: https://mainnet.base.org
+- Explorer: https://basescan.org
+
+## Resources
+- GitHub: https://github.com/droppingbeans/base-scanner
+- Website: https://base-scanner.vercel.app
+- Built by: @droppingbeans 🫘
+
+## Support
+For bugs or feature requests, open an issue on GitHub.
