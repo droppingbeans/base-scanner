@@ -404,8 +404,6 @@ export default function Home() {
             Built by <a href="https://x.com/DroppingBeans_" target="_blank" className="text-blue-400 hover:text-blue-300">@droppingbeans</a> 🫘
             {' • '}
             <a href="https://github.com/droppingbeans/base-scanner" target="_blank" className="text-blue-400 hover:text-blue-300">Source</a>
-            {' • '}
-            For the Base Agent Competition
           </div>
         </footer>
       </div>
