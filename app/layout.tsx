@@ -4,7 +4,7 @@ import '@coinbase/cds-web/globalStyles';
 import './globals.css';
 
 import { ThemeProvider, MediaQueryProvider } from '@coinbase/cds-web/system';
-import { coinbaseTheme } from '@coinbase/cds-web/themes/coinbaseTheme';
+import { baseScannerTheme } from './theme/baseScannerTheme';
 
 export const metadata = {
   title: 'Base Scanner - Real-time Contract Discovery',
@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <MediaQueryProvider>
-          <ThemeProvider theme={coinbaseTheme} activeColorScheme="dark">
+          <ThemeProvider theme={baseScannerTheme} activeColorScheme="dark">
             {children}
           </ThemeProvider>
         </MediaQueryProvider>
